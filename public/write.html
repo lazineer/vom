@@ -1,0 +1,77 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, height=device-height">
+	<title>VOM(Voice Of Modernhouse)</title>
+	<meta name="description" content="VOM">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
+</head>
+<body>
+	
+		지점 : <input type="text" id="branch" /><br/>
+		PU &nbsp;&nbsp;: <input type="text" id="pu" /><br/>
+		제목 : <input type="text" id="title" /><br/>
+		내용 : <textarea rows="10" cols="20" id="content"></textarea><br/>
+		<input type="button" value="확인" onclick="FormCheck()" />
+	
+<script type="text/javascript">
+	Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
+
+	function FormCheck() {
+		var branch = document.getElementById("branch").value;
+		var pu = document.getElementById("pu").value;
+		var title = document.getElementById("title").value;	 
+		var content = document.getElementById("content").value;
+
+		if (branch == null || branch == ""){	  // null인지 비교한 뒤
+			alert('지점을 입력하세요');		   // 경고창을 띄우고
+			document.getElementById("branch").focus();	// 해당태그에 포커스를 준뒤
+			return false;					   // false를 리턴합니다.
+		}
+
+		if (pu == null || pu == ""){	  // null인지 비교한 뒤
+			alert('PU를 입력하세요');		   // 경고창을 띄우고
+			document.getElementById("pu").focus();	// 해당태그에 포커스를 준뒤
+			return false;					   // false를 리턴합니다.
+		}
+
+		if (title == null ||  title  == ""){   
+			alert('제목을 입력하세요'); 
+			document.getElementById("title").focus();			
+			return false;			   
+		}
+		 
+		if (content == null ||  content == ""){
+			alert('내용을 입력하세요'); 
+			document.getElementById("content").focus();
+			return false;
+		}
+
+		CreateItem(branch, pu, title, content, false, null);
+	}
+
+	function CreateItem(strBranch, strPU, strTitle, strContent, bPublic, file) {
+		var Item = Parse.Object.extend("BBS");
+		var item = new Item();
+
+		item.set("Branch", strBranch);
+		item.set("PU", strPU);
+		item.set("Title", strTitle);
+		item.set("Content", strContent);
+		item.set("Public", bPublic);
+		item.set("File", file);
+
+		item.save(null, {
+			success: function(item) {
+				location.href="index.html";
+			},
+			error: function(item, error) {
+				alert('Failed: ' + error.description);
+			}
+		});
+	}
+</script>
+</body>
+
+</html>

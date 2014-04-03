@@ -1,0 +1,180 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, height=device-height">
+	<title>VOM(Voice Of Modernhouse</title>
+	<meta name="description" content="VOM">
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/styles.css">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
+</head>
+
+<body>
+	
+	<div align="left">
+		<h1>Welocme to VOM!</h1>
+	</div>
+	
+	<div>
+		<table id="myTable">
+			<tr>
+				<th>지점</th>
+				<th>PU</th>
+				<th>제목</th>
+				<th>날짜</th>
+			</tr>
+		</table>
+	</div>
+	<div align="left">
+		<a href="write.html">글쓰기</a>	
+	</div>
+	<div align="left">
+		<input type="file" id="profilePhotoFileUpload">
+	</div>
+	<div align="left">
+		<input type="button" value="업로드" onclick="UploadFile()"> 
+	</div>
+
+	<script type="text/javascript">
+		Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
+
+		//UpdateItem("x9lbF8Uuvp", "분당점", "선물", "건의사항", "자율출근제를 도입합시다!", true);
+		//DeleteItem("x9lbF8Uuvp");
+		var Item = Parse.Object.extend("BBS");
+		var query = new Parse.Query(Item);
+		var item;
+		var strBranch;
+		var strPU;
+		var strTitle;
+		var strContent;//사용 안 함
+		var bPublic;//사용 안 함
+		var date;
+
+		query.descending("createdAt");
+
+		query.find({
+		  success: function(results) {
+			// results is an array of Parse.Object.
+			for (var i = 0; i < results.length; i++) { 
+				item = results[i];
+				strBranch = item.get("Branch");
+				strPU = item.get("PU");
+				strTitle = item.get("Title");
+				strContent = item.get("Content");//사용 안 함
+				bPublic = item.get("Public");
+				date = item.createdAt;
+
+				myTable = document.getElementById('myTable');
+				row = myTable.insertRow(myTable.rows.length);
+				cell1 = row.insertCell(0);
+				cell2 = row.insertCell(1);
+				cell3 = row.insertCell(2);
+				cell4 = row.insertCell(3);
+				cell1.innerHTML = strBranch;
+				cell2.innerHTML = strPU;
+				cell3.innerHTML = strTitle;
+				cell4.innerHTML = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+			}
+		  },
+
+		  error: function(error) {
+			// error is an instance of Parse.Error.
+		  }
+		});
+
+		function UploadFile() {
+			var fileUploadControl = $("#profilePhotoFileUpload")[0];
+			if (fileUploadControl.files.length > 0) {
+				var file = fileUploadControl.files[0];
+				var name = fileUploadControl.files[0].name;
+			 
+				var parseFile = new Parse.File(name, file);
+
+				parseFile.save().then(function() {
+					// The file has been saved to Parse.
+					//CreateItem("평촌점", "가구", "건의사항", "연봉을 올려달라!", true, parseFile);
+					alert('성공');
+				}, function(error) {
+					// The file either could not be read, or could not be saved to Parse.
+					alert('실패: ' + error.description);
+				});
+			}
+			else
+				alert('실패: ㅡㅡ');
+		}
+
+		function ReadItem (strID) {
+			var Item = Parse.Object.extend("BBS");
+			var query = new Parse.Query(Item);
+
+			query.get(strID, {
+				success: function(item) {
+					// The object was retrieved successfully.
+					var strBranch = item.get("Branch");
+					var strPU = item.get("PU");
+					var strTitle = item.get("Title");
+					var strContent = item.get("Content");
+					var bPublic = item.get("Public");
+
+					//화면에 보여주기
+				},
+				error: function(object, error) {
+					// The object was not retrieved successfully.
+					// error is a Parse.Error with an error code and description.
+					alert('Failed to query to get a item for read, with error code: ' + error.description);
+				}
+			});
+		}
+		function UpdateItem(strID, strBranch, strPU, strTitle, strContent, bPublic) {
+			var Item = Parse.Object.extend("BBS");
+			var query = new Parse.Query(Item);
+
+			query.get(strID, {
+				success: function(item) {
+					// The object was retrieved successfully.
+					item.set("Branch", strBranch);
+					item.set("PU", strPU);
+					item.set("Title", strTitle);
+					item.set("Content", strContent);
+					item.set("Public", bPublic);
+
+					item.save();
+				},
+				error: function(object, error) {
+					// The object was not retrieved successfully.
+					// error is a Parse.Error with an error code and description.
+					alert('Failed to query to get a item for update, with error code: ' + error.description);
+				}
+			});
+		}
+
+		function DeleteItem(strID) {
+			var Item = Parse.Object.extend("BBS");
+			var query = new Parse.Query(Item);
+
+			query.get(strID, {
+				success: function(item) {
+					// The object was retrieved successfully.
+					item.destroy({
+						success: function(myObject) {
+							// The object was deleted from the Parse Cloud.
+						},
+						error: function(myObject, error) {
+							// The delete failed.
+							// error is a Parse.Error with an error code and description.
+							alert('Failed to delete a item, with error code: ' + error.description);
+						}
+					});
+				},
+				error: function(object, error) {
+					// The object was not retrieved successfully.
+					// error is a Parse.Error with an error code and description.
+					alert('Failed to query to get a itemfor delete, with error code: ' + error.description);
+				}
+			});
+		}
+	</script>
+</body>
+
+</html>
