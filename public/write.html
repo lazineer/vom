@@ -13,6 +13,7 @@
 		PU &nbsp;&nbsp;: <input type="text" id="pu" /><br/>
 		제목 : <input type="text" id="title" /><br/>
 		내용 : <textarea rows="10" cols="20" id="content"></textarea><br/>
+		<input type="file" id="profilePhotoFileUpload"><br/>
 		<input type="button" value="확인" onclick="FormCheck()" />
 	
 <script type="text/javascript">
@@ -23,6 +24,7 @@
 		var pu = document.getElementById("pu").value;
 		var title = document.getElementById("title").value;	 
 		var content = document.getElementById("content").value;
+		var parseFile = null;
 
 		if (branch == null || branch == ""){	  // null인지 비교한 뒤
 			alert('지점을 입력하세요');		   // 경고창을 띄우고
@@ -48,7 +50,30 @@
 			return false;
 		}
 
-		CreateItem(branch, pu, title, content, false, null);
+		parseFile = UploadFile();
+
+		CreateItem(branch, pu, title, content, true, parseFile);
+	}
+
+	function UploadFile() {
+		var fileUploadControl = $("#profilePhotoFileUpload")[0];
+		if (fileUploadControl.files.length > 0) {
+			var file = fileUploadControl.files[0];
+			var name = fileUploadControl.files[0].name;
+			var parseFile = new Parse.File(name, file);
+
+			parseFile.save().then(function() {
+				// The file has been saved to Parse.
+			}, function(error) {
+				// The file either could not be read, or could not be saved to Parse.
+				alert('UploadFile Failed: ' + error.description);
+			});
+
+			//parseFile.save();
+			return parseFile;
+		}
+		else
+			return null;
 	}
 
 	function CreateItem(strBranch, strPU, strTitle, strContent, bPublic, file) {
@@ -67,7 +92,7 @@
 				location.href="index.html";
 			},
 			error: function(item, error) {
-				alert('Failed: ' + error.description);
+				alert('CreateItem Failed: ' + error.description);
 			}
 		});
 	}

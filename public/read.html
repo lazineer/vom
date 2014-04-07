@@ -1,0 +1,66 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, height=device-height">
+	<title>VOM(Voice Of Modernhouse)</title>
+	<meta name="description" content="VOM">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
+</head>
+<body>
+	
+		지점 : <input type="text" id="branch" readonly="" /><br/>
+		PU &nbsp;&nbsp;: <input type="text" id="pu" readonly="" /><br/>
+		제목 : <input type="text" id="title" readonly="" /><br/>
+		내용 : <textarea rows="10" cols="20" id="content" readonly=""></textarea><br/>
+		<div>
+			<img id="profileImg" />
+		</div>
+		<div align="left">
+			<a href="index.html">목록으로</a>	
+		</div>
+	
+<script type="text/javascript">
+	Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
+
+	var strId = getURLParameter("id");
+	var objItem = {};
+
+	ReadItem(strId, objItem);
+
+	function getURLParameter(name) {
+		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+	}
+
+	function ReadItem (strID, objItem) {
+		var Item = Parse.Object.extend("BBS");
+		var query = new Parse.Query(Item);
+
+		query.get(strID, {
+			success: function(item) {
+				// The object was retrieved successfully.
+				objItem.strBranch = item.get("Branch");
+				objItem.strPU = item.get("PU");
+				objItem.strTitle = item.get("Title");
+				objItem.strContent = item.get("Content");
+				objItem.bPublic = item.get("Public");
+				objItem.file = item.get("File");
+
+				document.getElementById('branch').value = objItem.strBranch;
+				document.getElementById('pu').value = objItem.strPU;
+				document.getElementById('title').value = objItem.strTitle;
+				document.getElementById('content').value = objItem.strContent;
+
+				$("#profileImg")[0].src = objItem.file.url();
+			},
+			error: function(object, error) {
+				// The object was not retrieved successfully.
+				// error is a Parse.Error with an error code and description.
+				alert('Failed to query to get a item for read, with error code: ' + error.description);
+			}
+		});
+	}
+</script>
+</body>
+
+</html>
