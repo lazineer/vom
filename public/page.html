@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	</head>
+
+	<body>
+		<div id="div_list2">
+		</div>
+		<script type="text/javascript">
+			
+			Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
+			
+			var Item = Parse.Object.extend("BBS");
+			var query = new Parse.Query(Item);
+			var item;
+			var strBranch;
+			var strPU;
+			var strTitle;
+			var strContent;//사용 안 함
+			var bPublic;//사용 안 함
+			var date;
+	
+			var num_start;
+			var num_end;
+			var num_total;
+			//var urlParams;
+			
+			//alert(window.location);
+			//urlParams = window.location;
+			//urlParams = String(urlParams).split('?');
+			//urlParams = urlParams[1].split('&');
+	
+			query.descending("createdAt");
+	
+			query.find({
+				success: function(results) {
+					
+					num_total = results.length;
+					num_start = num_end;
+					num_end = num_start + 10;
+					for (var i = num_start; i < num_end; i++) { 
+						item = results[i];
+						strId = item.id;
+						strBranch = item.get("Branch");
+						strPU = item.get("PU");
+						strTitle = item.get("Title");
+						strContent = item.get("Content");//사용 안 함
+						bPublic = item.get("Public");
+						date = item.createdAt;
+	
+						$('#div_list').append("<a href='read.html?id=" + strId + "'>" + "<div style='width: 100%; border-bottom: 2px solid black; padding-top : 15px; padding-bottom: 15px'>"+
+						"<div style='float: left; margin-left: 10px; background-color: #808080; width: 60px; height: 20px; color: white; font-weight: bolder; text-align: center; padding-top: 5px; border-radius: 5px; font-size: 13px'>"+strBranch+"</div>"
+											+"<div style='float: left; margin-left: 30px; height: 30px; font-weight: bolder;'>" + strTitle + "</div>"
+											+"<br><br><div style='float: left;  margin-left: 10px; margin-top: -10px; width: 60px; height: 30px; color: black; font-weight: bolder; text-align: center; font-size: 13px'>" + strPU + "</div>"
+											+"<div style='float: right; margin-top: -10px; height: 30px; font-weight: bolder; font-size: 13px'>" +date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + "&nbsp&nbsp" + "</div>"
+						+"</div>" + "</a>");
+					}
+					
+					$("#div_list2").parent().append("<div class='next'><a href='page.html'>next</a></div>");
+					$("#div_list2").parent().jscroll();
+					$("#div_list2").remove();
+				},
+	
+				error: function(error) {
+					// error is an instance of Parse.Error.
+				}
+			});
+			
+			function UpdateItem(strID, strBranch, strPU, strTitle, strContent, bPublic) {
+				var Item = Parse.Object.extend("BBS");
+				var query = new Parse.Query(Item);
+	
+				query.get(strID, {
+					success: function(item) {
+						// The object was retrieved successfully.
+						item.set("Branch", strBranch);
+						item.set("PU", strPU);
+						item.set("Title", strTitle);
+						item.set("Content", strContent);
+						item.set("Public", bPublic);
+	
+						item.save();
+					},
+					error: function(object, error) {
+						// The object was not retrieved successfully.
+						// error is a Parse.Error with an error code and description.
+						alert('Failed to query to get a item for update, with error code: ' + error.description);
+					}
+				});
+			}
+	
+			function DeleteItem(strID) {
+				var Item = Parse.Object.extend("BBS");
+				var query = new Parse.Query(Item);
+	
+				query.get(strID, {
+					success: function(item) {
+						// The object was retrieved successfully.
+						item.destroy({
+							success: function(myObject) {
+								// The object was deleted from the Parse Cloud.
+							},
+							error: function(myObject, error) {
+								// The delete failed.
+								// error is a Parse.Error with an error code and description.
+								alert('Failed to delete a item, with error code: ' + error.description);
+							}
+						});
+					},
+					error: function(object, error) {
+						// The object was not retrieved successfully.
+						// error is a Parse.Error with an error code and description.
+						alert('Failed to query to get a itemfor delete, with error code: ' + error.description);
+					}
+				});
+			}
+	</script>
+	</body>
+</html>

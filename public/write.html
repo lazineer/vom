@@ -6,34 +6,106 @@
 	<meta name="description" content="VOM">
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-	
-		지점 : <input type="text" id="branch" /><br/>
-		PU &nbsp;&nbsp;: <input type="text" id="pu" /><br/>
-		제목 : <input type="text" id="title" /><br/>
-		내용 : <textarea rows="10" cols="20" id="content"></textarea><br/>
-		<input type="file" id="profilePhotoFileUpload"><br/>
-		<input type="button" value="확인" onclick="FormCheck()" />
+	<div style="margin-left: 20px">
+		<div class="div_rw_top">
+			<p style="font-size: 25px">새 글 작성</p>
+			<p style="font-size: 12px; margin-top: -18px;">새로운 글을 작성해 주세요</p>
+		</div>
+			<select id="select_branch" onchange="chgBranch()">
+				<option value="">지점을 선택해 주세요</option>
+				<option value="kangnam">강남점</option>
+				<option value="kangbook">강북점</option>
+				<option value="kangseo">강서점</option>
+				<option value="kojan">고잔점</option>
+				<option value="kangmyung">광명점</option>
+				<option value="kangjoo">광주역점</option>
+				<option value="keoijung">괴정점</option>
+				<option value="kooro">구로점</option>
+				<option value="kimhae">김해점</option>
+				<option value="dangsan">당산점</option>
+				<option value="daejunsay">대전세이백화점점</option>
+				<option value="dongsuwon">동수원점</option>
+				<option value="busandae">부산대점</option>
+				<option value="buchoen">부천점</option>
+				<option value="bukang">부평점</option>
+				<option value="bundang">분당점</option>
+				<option value="bulkang">불광점</option>
+				<option value="songpa">송파점</option>
+				<option value="shoping">쇼핑점</option>
+				<option value="susong">수성점</option>
+				<option value="suwon">수원점</option>
+				<option value="asan">아산점</option>
+				<option value="yatop">야탑점</option>
+				<option value="yongsanipark">용산아이파크몰점</option>
+				<option value="ulsan">울산점</option>
+				<option value="incheon">인천점</option>
+				<option value="internet">인터넷몰</option>
+				<option value="ilsan">일산점</option>
+				<option value="junjukaksa">전주객사점</option>
+				<option value="jungaey">중계점</option>
+				<option value="changwon">창원점</option>
+				<option value="cheonho2">천호2호점</option>
+				<option value="timesquare">타임스퀘어점</option>
+				<option value="pyongchon">평촌점</option>
+				<option value="pyongtek">평택점</option>
+				<option value="haewoondae">해운대점</option>
+				<option value="ncwave">NC웨이브 충장점</option>
+				<option value="nccube">NC큐트 커넬워크점</option>
+			</select><br>
+			
+			<select id="select_PU" onchange="chgPU()">
+				<option value="">PU를 선택해 주세요</option>
+				<option value="kitchen">주방</option>
+				<option value="chimjang">침장</option>
+				<option value="gift">선물</option>
+				<option value="furniture">가구</option>
+				<option value="fancy">팬시</option>
+			</select><br>
+			
+			<input type="text" id="title" placeholder="제목"><br/>
+			
+			<hr style="width: 93%">
+			<textarea rows="10" cols="20" id="content"></textarea><br/>
+			<hr style="width: 93%">
+			
+			<input type="file" id="profilePhotoFileUpload"><br/>
+			<input id="btn_submit" type="button" value="확인" onclick="FormCheck()" />
+		</div>
 	
 <script type="text/javascript">
 	Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
-
+	
+	var select_branch = document.getElementById("select_branch");
+	var select_pu = document.getElementById("select_PU");
+	var branch;
+	var pu;
+			
+	function chgBranch(){
+		branch = select_branch.options[select_branch.selectedIndex].innerHTML;
+	}
+	
+	function chgPU(){
+		pu = select_pu.options[select_pu.selectedIndex].innerHTML;
+	}
+		
 	function FormCheck() {
-		var branch = document.getElementById("branch").value;
-		var pu = document.getElementById("pu").value;
+		
 		var title = document.getElementById("title").value;	 
 		var content = document.getElementById("content").value;
 		var parseFile = null;
 
 		if (branch == null || branch == ""){	  // null인지 비교한 뒤
-			alert('지점을 입력하세요');		   // 경고창을 띄우고
+			alert('지점을 선택하세요');		   // 경고창을 띄우고
 			document.getElementById("branch").focus();	// 해당태그에 포커스를 준뒤
 			return false;					   // false를 리턴합니다.
 		}
 
 		if (pu == null || pu == ""){	  // null인지 비교한 뒤
-			alert('PU를 입력하세요');		   // 경고창을 띄우고
+			alert('PU를 선택하세요');		   // 경고창을 띄우고
 			document.getElementById("pu").focus();	// 해당태그에 포커스를 준뒤
 			return false;					   // false를 리턴합니다.
 		}

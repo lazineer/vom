@@ -6,35 +6,41 @@
 	<meta name="description" content="VOM">
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/styles.css">
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
+	<script type="text/javascript" src="scroll/jquery.jscroll.min.js"></script>
+<!--	<script type="text/javascript" src="scroll/jscroll.jquery.json"></script>-->
 </head>
 
 <body>
 	
-	<div align="left">
-		<h1>Welocme to VOM!</h1>
+	<div id="div_upper" style="z-index: -10">
+		<img src="img/upper.png">
 	</div>
+	<div id="div_write"><a href="write.html">글쓰기</a></div>
 	
-	<div>
-		<table id="myTable">
-			<tr>
-				<th>지점</th>
-				<th>PU</th>
-				<th>제목</th>
-				<th>날짜</th>
-			</tr>
-		</table>
-	</div>
-	<div align="left">
-		<a href="write.html">글쓰기</a>	
+	<div id="div_list">
+
 	</div>
 
 	<script type="text/javascript">
+		var mainDiv_pos;
+		var device_width;
+		
+		$(function(){
+			mainDiv_pos = $('#div_upper').height();
+			device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+			
+			$('#div_upper').css("width",device_width+"px");
+			$('#div_list').css("top",mainDiv_pos+25+"px");
+		});
+	
 		Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
 
 		//UpdateItem("x9lbF8Uuvp", "분당점", "선물", "건의사항", "자율출근제를 도입합시다!", true);
 		//DeleteItem("x9lbF8Uuvp");
+		
+		
 		var Item = Parse.Object.extend("BBS");
 		var query = new Parse.Query(Item);
 		var item;
@@ -44,13 +50,21 @@
 		var strContent;//사용 안 함
 		var bPublic;//사용 안 함
 		var date;
+		
+		var num_start;
+		var num_end;
+		var num_total;
 
 		query.descending("createdAt");
 
 		query.find({
 			success: function(results) {
-				// results is an array of Parse.Object.
-				for (var i = 0; i < results.length; i++) { 
+				
+				num_total = results.length;
+				num_start = 0;
+				num_end = num_start + 10;
+				
+				for (var i = num_start; i < num_end; i++) { 
 					item = results[i];
 					strId = item.id;
 					strBranch = item.get("Branch");
@@ -60,17 +74,15 @@
 					bPublic = item.get("Public");
 					date = item.createdAt;
 
-					myTable = document.getElementById('myTable');
-					row = myTable.insertRow(myTable.rows.length);
-					cell1 = row.insertCell(0);
-					cell2 = row.insertCell(1);
-					cell3 = row.insertCell(2);
-					cell4 = row.insertCell(3);
-					cell1.innerHTML = strBranch;
-					cell2.innerHTML = strPU;
-					cell3.innerHTML = '<a href="read.html?id=' + strId + '">' + strTitle + '</a>';
-					cell4.innerHTML = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+					$('#div_list').append("<a href='read.html?id=" + strId + "'>" + "<div style='width: 100%; border-bottom: 2px solid black; padding-top : 15px; padding-bottom: 15px'>"+
+					"<div style='float: left; margin-left: 10px; background-color: #808080; width: 60px; height: 20px; color: white; font-weight: bolder; text-align: center; padding-top: 5px; border-radius: 5px; font-size: 13px'>"+strBranch+"</div>"
+										+"<div style='float: left; margin-left: 30px; height: 30px; font-weight: bolder;'>" + strTitle + "</div>"
+										+"<br><br><div style='float: left;  margin-left: 10px; margin-top: -10px; width: 60px; height: 30px; color: black; font-weight: bolder; text-align: center; font-size: 13px'>" + strPU + "</div>"
+										+"<div style='float: right; margin-top: -10px; height: 30px; font-weight: bolder; font-size: 13px'>" +date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + "&nbsp&nbsp" + "</div>"
+					+"</div>" + "</a>");
 				}
+					$('#div_list').append("<div class='next'><a href='page.html'>next</a></div>");
+					$('#div_list').jscroll();
 			},
 
 			error: function(error) {
@@ -134,6 +146,11 @@
 					alert('Failed to query to get a itemfor delete, with error code: ' + error.description);
 				}
 			});
+		}
+		
+		function nextPage(){
+			location = "page.html?s="+num_start+"&e="+num_end;
+			//http://192.168.137.1:8020/vom_ing/public/index.html
 		}
 	</script>
 </body>
