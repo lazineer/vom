@@ -22,7 +22,8 @@
 			<hr style="width: 93%">
 			
 			<div style="width : 80%; margin-left: 7%">
-				<img id="profileImg" />
+				<img id="file1" />
+				<img id="file2" />
 			</div>
 			
 			<a href="index.html">
@@ -37,15 +38,12 @@
 	Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
 
 	var strId = getURLParameter("id");
-	var objItem = {};
+	ReadItem(strId);
 
-	ReadItem(strId, objItem);
-
-	
-
-	function ReadItem (strID, objItem) {
+	function ReadItem (strID) {
 		var Item = Parse.Object.extend("BBS");
 		var query = new Parse.Query(Item);
+		var objItem = {};
 
 		query.get(strID, {
 			success: function(item) {
@@ -56,18 +54,15 @@
 				objItem.strContent = item.get("Content");
 				objItem.bPublic = item.get("Public");
 				objItem.file = item.get("File");
-
-				/*
-				document.getElementById('branch').value = objItem.strBranch;
-								document.getElementById('pu').value = objItem.strPU;
-								document.getElementById('title').value = objItem.strTitle;*/
+				objItem.file2 = item.get("File2");
 				
 				var strSubtitle = objItem.strBranch + " " + objItem.strPU;
 				document.getElementById('p_title').innerHTML = objItem.strTitle;
 				document.getElementById('p_subtitle').innerHTML = strSubtitle;
 				document.getElementById('content').value = objItem.strContent;
 
-				$("#profileImg")[0].src = objItem.file.url();
+				$("#file1")[0].src = objItem.file.url();
+				$("#file2")[0].src = objItem.file2.url();
 			},
 			error: function(object, error) {
 				// The object was not retrieved successfully.

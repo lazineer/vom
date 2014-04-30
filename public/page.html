@@ -8,8 +8,10 @@
 		<div id="div_list2">
 		</div>
 		<script type="text/javascript">
-			Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
-			LoadAllItems(false);
-	</script>
+			if(parentOptVal === null) //검색을 안 함
+				LoadAllItems(false);
+			else //검색 시
+				LoadSpecificItems(false, parentOptVal, childOptVal, searchWord);
+		</script>
 	</body>
 </html>

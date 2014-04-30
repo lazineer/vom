@@ -34,7 +34,8 @@
 			<textarea rows="10" cols="20" id="content"></textarea><br/>
 			<hr style="width: 93%">
 			
-			<input type="file" id="profilePhotoFileUpload"><br/>
+			<input type="file" id="file1"><br/>
+			<input type="file" id="file2"><br/>
 			<div style="float: left; width: 100%; margin-bottom: 15px;">
 				<input id="btn_submit" type="button" value="확인" onclick="FormCheck()" />
 				<button id="btn_cancle" onclick="javascript:location='index.html'">취소</button>
@@ -70,10 +71,10 @@
 	}
 		
 	function FormCheck() {
-		
 		var title = document.getElementById("title").value;	 
 		var content = document.getElementById("content").value;
-		var parseFile = null;
+		var parseFile1 = null;
+		var parseFile2 = null;
 
 		if (branch == null || branch == ""){	  // null인지 비교한 뒤
 			alert('지점을 선택하세요');		   // 경고창을 띄우고
@@ -99,17 +100,30 @@
 			return false;
 		}
 
-		parseFile = UploadFile();
+		parseFile1 = UploadFile('file1');
+		parseFile2 = UploadFile('file2');
 
-		CreateItem(branch, pu, title, content, true, parseFile);
+		if(parseFile1 === null && parseFile2 !== null) {
+			parseFile1 = parseFile2;
+			parseFile2 = null;
+		}
+
+		//if text_pwd is disabled then public
+		var isPublic = document.getElementById("text_pwd").disabled;
+		var pw = document.getElementById("text_pwd").value;
+		CreateItem(branch, pu, title, content, isPublic, pw, parseFile1, parseFile2);
 	}
 
-	function UploadFile() {
-		var fileUploadControl = $("#profilePhotoFileUpload")[0];
+	function UploadFile(fileId) {
+		var fileUploadControl = $("#" + fileId)[0];
 		if (fileUploadControl.files.length > 0) {
 			var file = fileUploadControl.files[0];
-			var name = fileUploadControl.files[0].name;
-			var parseFile = new Parse.File(name, file);
+			var fullName = fileUploadControl.files[0].name;
+			var dotIdx = fullName.lastIndexOf(".");
+			//var name = fullName.substring(0, dotIdx);
+			var extName = fullName.substring(dotIdx + 1, fullName.length);
+
+			var parseFile = new Parse.File(fileId + "." + extName, file);
 
 			parseFile.save().then(function() {
 				// The file has been saved to Parse.
@@ -125,7 +139,7 @@
 			return null;
 	}
 
-	function CreateItem(strBranch, strPU, strTitle, strContent, bPublic, file) {
+	function CreateItem(strBranch, strPU, strTitle, strContent, bPublic, password, file1, file2) {
 		var Item = Parse.Object.extend("BBS");
 		var item = new Item();
 
@@ -134,7 +148,9 @@
 		item.set("Title", strTitle);
 		item.set("Content", strContent);
 		item.set("Public", bPublic);
-		item.set("File", file);
+		item.set("password", password);
+		item.set("File", file1);
+		item.set("File2", file2);
 
 		item.save(null, {
 			success: function(item) {
