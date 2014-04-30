@@ -6,6 +6,7 @@
 	<meta name="description" content="VOM">
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
+	<script type="text/javascript" src="common.js"></script>
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
@@ -40,9 +41,7 @@
 
 	ReadItem(strId, objItem);
 
-	function getURLParameter(name) {
-		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
-	}
+	
 
 	function ReadItem (strID, objItem) {
 		var Item = Parse.Object.extend("BBS");

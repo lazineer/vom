@@ -8,7 +8,6 @@
 	<link rel="stylesheet" href="css/styles.css">
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
-	<script type="text/javascript" src="scroll/jquery.jscroll.min.js"></script>
 	<script type="text/javascript" src="common.js"></script>
 <!--	<script type="text/javascript" src="scroll/jscroll.jquery.json"></script>-->
 </head>
@@ -37,8 +36,13 @@
 		var mainDiv_pos;
 		var device_width;
 
-		Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");	
-		LoadAllItems(true);
+		Parse.initialize("VlzoLnwwdwKUwvKFUPEKSadvZlL6SeVmPuRDy8ac", "fxEr0NEeRaD6rfs80NEO21t6efQm3FwHwgwaQPuH");
+		
+		var parentOptVal = getURLParameter("parentOptVal");
+		var childOptVal = getURLParameter("childOptVal");
+		var searchWord = getURLParameter("searchWord");
+
+		LoadSpecificItems(true, parentOptVal, childOptVal, searchWord);
 
 		function chgOpt2(){
 			var opt1;
