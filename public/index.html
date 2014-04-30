@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.2.18.min.js"></script>
 	<script type="text/javascript" src="scroll/jquery.jscroll.min.js"></script>
+	<script type="text/javascript" src="common.js"></script>
 <!--	<script type="text/javascript" src="scroll/jscroll.jquery.json"></script>-->
 </head>
 
@@ -22,10 +23,42 @@
 	<div id="div_list">
 
 	</div>
-
+	<div id="div_serach">
+		<select id="select_srcOption1" style="width: 60px; margin-left: 10px; height: 30px" onchange="chgOpt2()">
+			<option value="Title">제목</option>
+			<option value="Branch">지점</option>
+			<option value="PU">부서</option>
+		</select>
+		<select id="select_srcOption2" style="width: 60px; margin-left: 10px; height: 30px"></select>
+		<input id="input_srcWord" style="margin-left: 10px; width: 35%; height: 30px" type="text" placeholder="검색어 입력">
+		<button style="margin-left: 10px; height: 30px" onclick="doSearch()">검색</button>
+	</div>
 	<script type="text/javascript">
 		var mainDiv_pos;
 		var device_width;
+		
+		function chgOpt2(){
+			var opt1;
+			opt1 = select_srcOption1.options[select_srcOption1.selectedIndex].value;
+			document.getElementById("select_srcOption2").innerHTML = "";
+
+			AddOption(opt1, 'select_srcOption2');
+		}
+		
+		// 검색 버튼 눌렀을 때 호출
+		function doSearch(){
+			var src_optVal;	// 지점 혹은 부서 선택 옵션 변수
+			var src_word;	// 검색어 변수
+			
+			if(select_srcOption1.options[select_srcOption1.selectedIndex].value != "t"){
+				src_optVal = select_srcOption2.options[select_srcOption2.selectedIndex].innerHTML;
+			} else{
+				src_optVal = "";
+			}
+			
+			src_word = document.getElementById("input_srcWord").value;
+			alert("src_optVal : " + src_optVal + " / " + "src_word : " + src_word);
+		}
 		
 		$(function(){
 			mainDiv_pos = $('#div_upper').height();
@@ -99,54 +132,6 @@
 			}
 		});
 */
-		function UpdateItem(strID, strBranch, strPU, strTitle, strContent, bPublic) {
-			var Item = Parse.Object.extend("BBS");
-			var query = new Parse.Query(Item);
-
-			query.get(strID, {
-				success: function(item) {
-					// The object was retrieved successfully.
-					item.set("Branch", strBranch);
-					item.set("PU", strPU);
-					item.set("Title", strTitle);
-					item.set("Content", strContent);
-					item.set("Public", bPublic);
-
-					item.save();
-				},
-				error: function(object, error) {
-					// The object was not retrieved successfully.
-					// error is a Parse.Error with an error code and description.
-					alert('Failed to query to get a item for update, with error code: ' + error.description);
-				}
-			});
-		}
-
-		function DeleteItem(strID) {
-			var Item = Parse.Object.extend("BBS");
-			var query = new Parse.Query(Item);
-
-			query.get(strID, {
-				success: function(item) {
-					// The object was retrieved successfully.
-					item.destroy({
-						success: function(myObject) {
-							// The object was deleted from the Parse Cloud.
-						},
-						error: function(myObject, error) {
-							// The delete failed.
-							// error is a Parse.Error with an error code and description.
-							alert('Failed to delete a item, with error code: ' + error.description);
-						}
-					});
-				},
-				error: function(object, error) {
-					// The object was not retrieved successfully.
-					// error is a Parse.Error with an error code and description.
-					alert('Failed to query to get a itemfor delete, with error code: ' + error.description);
-				}
-			});
-		}
 		
 		function nextPage(){
 			location = "page.html?s="+num_start+"&e="+num_end;
