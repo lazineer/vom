@@ -8,14 +8,14 @@ img{
 	top : 0px;
 }
 
-#div_upper img{
+#img_line {
 	width : 100%;
 }
 
 #div_list{
 	/*position : absolute;*/
 	width : 100%;
-	margin : auto;
+	/*margin : auto;*/
 	/*margin-top: -20px;*/
 	margin-bottom: 55px;
 }

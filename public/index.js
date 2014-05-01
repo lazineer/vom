@@ -1,5 +1,5 @@
-var mainDiv_pos;
-var device_width;
+//var mainDiv_pos;
+//var device_width;
 
 if(parentOptVal === null) //검색을 안 함
 	LoadAllItems(true);
@@ -39,11 +39,15 @@ function doSearch(){
 	
 	location.href="index.html?parentOptVal=" + src_parentOptVal + "&childOptVal=" + src_childOptVal +"&searchWord=" + src_searchWord;
 }
-
+/*
 $(function(){
 	mainDiv_pos = $('#div_upper').height();
 	device_width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
 	
 	$('#div_upper').css("width",device_width+"px");
 	$('#div_list').css("top",mainDiv_pos+25+"px");
+
+	//alert(mainDiv_pos + "/" + device_width);
+	//alert(window.innerWidth + "/" + screen.width);
 });
+*/
