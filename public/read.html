@@ -21,11 +21,19 @@
 			<textarea rows="10" cols="20" id="content" readonly=""></textarea><br/>
 			<hr style="width: 93%">
 			
-			<div style="width : 80%; margin-left: 7%">
-				<img class="upload_img" id="file1" />
-				<img class="upload_img" id="file2" />
+			<div id="img_list" style="width : 80%; margin-left: 7%">
 			</div>
-			
+		</div>
+
+		<div id="comment_list" style="margin-left: 20px">
+		</div>
+
+		<div style="margin-left: 20px">
+			<textarea style="width: 70%" rows="3" cols="20" id="comment"></textarea>
+			<button id="btn_write_comment" onclick="CreateComment()">댓글 쓰기</button>
+		</div>
+
+		<div style="margin-left: 20px">
 			<a href="index.html">
 				<div id="a_backToList">
 					목록으로
@@ -39,6 +47,32 @@
 
 	var strId = getURLParameter("id");
 	ReadItem(strId);
+	LoadComments(strId);
+
+	function CreateComment () {
+		var comment = document.getElementById("comment").value;
+
+		if (comment == null ||  comment == ""){
+			alert('내용을 입력하세요'); 
+			document.getElementById("comment").focus();
+			return false;
+		}
+
+		var Item = Parse.Object.extend("Comment");
+		var item = new Item();
+		item.set("ItemId", strId);
+		item.set("Content", comment);
+
+		item.save(null, {
+			success: function(item) {
+				Parse.Cloud.run('AddNumComments', {itemId:strId}, {});	
+				location.reload();
+			},
+			error: function(item, error) {
+				alert('CreateComment Failed: ' + error.description);
+			}
+		});
+	}
 
 	function ReadItem (strID) {
 		var Item = Parse.Object.extend("BBS");
@@ -61,8 +95,15 @@
 				document.getElementById('p_subtitle').innerHTML = strSubtitle;
 				document.getElementById('content').value = objItem.strContent;
 
-				$("#file1")[0].src = objItem.file.url();
-				$("#file2")[0].src = objItem.file2.url();
+				if(objItem.file !== null) {
+					$('#img_list').append("<img class='upload_img' id='file1' />");
+					$("#file1")[0].src = objItem.file.url();
+				}
+
+				if(objItem.file2 !== null) {
+					$('#img_list').append("<img class='upload_img' id='file2' />");
+					$("#file2")[0].src = objItem.file2.url();
+				}
 			},
 			error: function(object, error) {
 				// The object was not retrieved successfully.

@@ -102,6 +102,23 @@ textarea{
 	padding-top: 10px;
 }
 
+#btn_write_comment{
+	width: 23%;
+	border: 1px solid #A3A3A3;
+	border-radius: 2px;
+	background: -webkit-linear-gradient(rgba(255, 255, 255, 1), rgba(220, 220, 220, 1)); /* For Safari 5.1 to 6.0 */
+	background: -o-linear-gradient(rgba(255, 255, 255, 1), rgba(220, 220, 220, 1)); /* For Opera 11.1 to 12.0 */
+	background: -moz-linear-gradient(rgba(255, 255, 255, 1), rgba(220, 220, 220, 1)); /* For Firefox 3.6 to 15 */
+	background: linear-gradient(rgba(255, 255, 255, 1), rgba(220, 220, 220, 1)); /* Standard syntax (must be last) */
+	text-align: center;
+	font-weight: bolder;
+	font-size: 15px;
+	padding-top: 22px;
+	padding-bottom: 22px;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
 #div_write{
 	position: absolute; top: 8px; right: 10px; z-index: 10; border: 2px solid #A3A3A3; border-radius: 5px; width: 80px; text-align: center; font-weight: bolder
 }

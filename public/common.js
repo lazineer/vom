@@ -23,6 +23,7 @@ function LoadSpecificItems(isDefault, parentOptVal, childOptVal, searchWord){
 	//클라우드 코드 내에 선언을 하면 안 되네 ㅡㅡ;;
 	var obj = {};
 	var item;
+	var strNumComments = "";
 
 	Parse.Cloud.run('LoadItems', {parentOptVal:parentOptVal, childOptVal:childOptVal, searchWord:searchWord}, {			
 		
@@ -45,14 +46,23 @@ function LoadSpecificItems(isDefault, parentOptVal, childOptVal, searchWord){
 				obj.strTitle = item.get("Title");
 				obj.strContent = item.get("Content");//사용 안 함
 				obj.bPublic = item.get("Public");
+				obj.numComments = item.get("NumComments");
 				obj.date = item.createdAt;
 
-				$('#div_list').append("<a href='read.html?id=" + obj.strId + "'>" + "<div style='width: 100%; border-bottom: 2px solid black; padding-top : 15px; padding-bottom: 15px'>"+
-				"<div style='float: left; margin-left: 10px; background-color: #808080; width: 60px; height: 20px; color: white; font-weight: bolder; text-align: center; padding-top: 5px; border-radius: 5px; font-size: 13px'>"+obj.strBranch+"</div>"
-									+"<div style='float: left; margin-left: 30px; height: 30px; font-weight: bolder;'>" + obj.strTitle + "</div>"
-									+"<br><br><div style='float: left;  margin-left: 10px; margin-top: -10px; width: 60px; height: 30px; color: black; font-weight: bolder; text-align: center; font-size: 13px'>" + obj.strPU + "</div>"
-									+"<div style='float: right; margin-top: -10px; height: 30px; font-weight: bolder; font-size: 13px'>" +obj.date.getFullYear() + '-' + (obj.date.getMonth() + 1) + '-' + obj.date.getDate() + "&nbsp&nbsp" + "</div>"
-				+"</div>" + "</a>");
+				if(item.get("NumComments") > 0) {
+					strNumComments = "<div style='color: red; float: right; margin-right: 30px; height: 30px; font-weight: bolder;'>+" + obj.numComments + "</div>";
+				}
+
+				$('#div_list').append("<a href='read.html?id=" + obj.strId + "'>"
+									+ "<div style='width: 100%; border-bottom: 2px solid black; padding-top : 15px; padding-bottom: 15px'>"
+										+"<div style='float: left; margin-left: 10px; background-color: #808080; width: 60px; height: 20px; color: white; font-weight: bolder; text-align: center; padding-top: 5px; border-radius: 5px; font-size: 13px'>"+obj.strBranch+"</div>"
+										+"<div style='float: left; margin-left: 30px; height: 30px; font-weight: bolder;'>" + obj.strTitle + "</div>"
+										+ strNumComments
+										+"<br><br><div style='float: left;  margin-left: 10px; margin-top: -10px; width: 60px; height: 30px; color: black; font-weight: bolder; text-align: center; font-size: 13px'>" + obj.strPU + "</div>"
+										+"<div style='float: right; margin-top: -10px; height: 30px; font-weight: bolder; font-size: 13px'>" +obj.date.getFullYear() + '-' + (obj.date.getMonth() + 1) + '-' + obj.date.getDate() + "&nbsp&nbsp" + "</div>"
+									+"</div>"
+									+"</a>");
+				strNumComments = "";
 			}
 
 			if(isDefault) {
@@ -65,6 +75,31 @@ function LoadSpecificItems(isDefault, parentOptVal, childOptVal, searchWord){
 				$("#div_list2").remove();
 			}
 		
+		},
+		error: function(error) {
+			alert(error);
+		}
+	});	
+}
+
+function LoadComments(strId){
+	
+	//클라우드 코드 내에 선언을 하면 안 되네 ㅡㅡ;;
+	var obj = {};
+	var item;
+
+	Parse.Cloud.run('LoadComments', {itemId:strId}, {			
+		
+		success: function(items) {
+
+			for (var i = 0; i < items.length; i++) { 
+				item = items[i];
+				obj.strId = item.id;
+				obj.strContent = item.get("Content");//사용 안 함
+				obj.date = item.createdAt;
+
+				$('#comment_list').append("<div>" + obj.strContent + "</div><hr style='width: 93%'>");
+			}
 		},
 		error: function(error) {
 			alert(error);
