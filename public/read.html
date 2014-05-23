@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-		<div style="margin-left: 20px">
+		<div id="beforeComment" style="margin-left: 20px">
 			<div class="div_rw_top">
 				<p style="font-size: 25px" id="p_title"></p>
 				<p style="font-size: 15px; margin-top: -18px;" id="p_subtitle"></p>
@@ -92,6 +92,7 @@
 		var Item = Parse.Object.extend("BBS");
 		var query = new Parse.Query(Item);
 		var objItem = {};
+		var hasImg = false;
 
 		query.get(strID, {
 			success: function(item) {
@@ -112,11 +113,17 @@
 				if(objItem.file !== null) {
 					$('#img_list').append("<img class='upload_img' id='file1' />");
 					$("#file1")[0].src = objItem.file.url();
+					hasImg = true;
 				}
 
 				if(objItem.file2 !== null) {
 					$('#img_list').append("<img class='upload_img' id='file2' />");
 					$("#file2")[0].src = objItem.file2.url();
+					hasImg = true;
+				}
+
+				if(hasImg) {
+					$('#beforeComment').append("<hr style='width: 93%'>");
 				}
 			},
 			error: function(object, error) {
