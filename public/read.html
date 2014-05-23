@@ -63,13 +63,27 @@
 		item.set("ItemId", strId);
 		item.set("Content", comment);
 
-		item.save(null, {
-			success: function(item) {
-				Parse.Cloud.run('AddNumComments', {itemId:strId}, {});	
-				location.reload();
+		var ItemComment = Parse.Object.extend("BBS");
+		var query = new Parse.Query(ItemComment);
+
+		query.get(strId, {
+			success: function(itemBBS) {
+				// The object was retrieved successfully.
+				item.set("pBBS", itemBBS);
+
+				item.save(null, {
+					success: function(item) {
+						location.reload();
+					},
+					error: function(item, error) {
+						alert('CreateComment Failed: ' + error.description);
+					}
+				});
 			},
-			error: function(item, error) {
-				alert('CreateComment Failed: ' + error.description);
+			error: function(object, error) {
+				// The object was not retrieved successfully.
+				// error is a Parse.Error with an error code and description.
+				alert('댓글 등록 실패');
 			}
 		});
 	}

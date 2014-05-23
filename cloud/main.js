@@ -46,23 +46,15 @@ Parse.Cloud.define("LoadComments", function(request, response) {
 	});
 });
 
-Parse.Cloud.define("AddNumComments", function(request, response) {
-	var ItemComment = Parse.Object.extend("BBS");
-	var query = new Parse.Query(ItemComment);
-	var numComments;
-
-	query.get(request.params.itemId, {
-		success: function(item) {
-			// The object was retrieved successfully.
-			numComments = item.get("NumComments");
-			item.set("NumComments", numComments + 1);
-
-			item.save();
-		},
-		error: function(object, error) {
-			// The object was not retrieved successfully.
-			// error is a Parse.Error with an error code and description.
-			response.error("댓글 개수 증가 실패");
-		}
-	});
+Parse.Cloud.afterSave("Comment", function(request) {
+  query = new Parse.Query("BBS");
+  query.get(request.object.get("pBBS").id, {
+    success: function(post) {
+      post.increment("NumComments");
+      post.save();
+    },
+    error: function(error) {
+      console.error("Got an error " + error.code + " : " + error.message);
+    }
+  });
 });
